@@ -53,7 +53,18 @@ Your finished project must include all of the following requirements (further in
 
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
-1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+1. What are the differences between using _sessions_ and _JSON Web Tokens_ for authentication?
+
+Using JSON web tokens (JWTs) is appropriate if a stateless authentication solution is suitable. When using JWTs, the client is responsible for keeping track of logged in users. Because of this, it is more difficult to implement any kind of log out functionality. On the other hand, using sessions is appropriate if a stateful authentication solution is needed. When using sessions, the server is responsible for keeping track of logged in users. Because of this, it is easier to implement log out functionality than with stateless authentication solutions such as JWTs.
+
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+
+It hashes passwords.
+
 3. How are unit tests different from integration and end-to-end testing?
+
+The different types of test are distinguished by their scope and focus. Unit tests are smaller in scope and narrower in focus. They usually only examine one specific function or method to ensure that it works as intended and required. On the other hand, integration and end-to-end tests are larger in scope and broader in focus. They usually examine multiple parts of the project or application to ensure that those different larger pieces work together as intended to produce the required end-to-end features, functionality, and / or user experience.
+
 4. How does _Test Driven Development_ change the way we write applications and tests?
+
+Test driven development (TDD) changes the way we write applications and tests by reversing the standard order of work. Instead of the typical progression of writing the application code first and then writing tests to test it, TDD entails writing tests first and then writing the application code needed to make the tests pass.
