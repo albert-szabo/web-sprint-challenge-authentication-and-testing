@@ -1,7 +1,9 @@
 const router = require('express').Router();
-const { validateRegistrationPayload, checkUsernameAvailable } = require('../middleware/other-middleware');
+const { validatePayload, checkUsernameAvailable, checkUsernameExists } = require('../middleware/other-middleware');
 const Users = require('../users/users-model');
 const bcrypt = require('bcryptjs');
+const { JWT_SECRET } = require('../secrets/index');
+const jwt = require('jsonwebtoken');
 
 /*
   IMPLEMENT
@@ -29,7 +31,7 @@ const bcrypt = require('bcryptjs');
     the response body should include a string exactly as follows: "username taken".
 */
 
-router.post('/register', validateRegistrationPayload, checkUsernameAvailable, (request, response, next) => {
+router.post('/register', validatePayload, checkUsernameAvailable, (request, response, next) => {
   const { username, password } = request.body;
   const hash = bcrypt.hashSync(password, 8);
   Users.add({ username, password: hash })
@@ -63,8 +65,28 @@ router.post('/register', validateRegistrationPayload, checkUsernameAvailable, (r
     the response body should include a string exactly as follows: "invalid credentials".
 */
 
-router.post('/login', (request, response) => {
-  res.end('implement login, please!');
+router.post('/login', validatePayload, checkUsernameExists, (request, response, next) => {
+  const passwordMatch = bcrypt.compareSync(request.body.password, request.user.password);
+  if (passwordMatch) {
+    const token = createToken(request.user);
+    response.json({
+      message: `welcome, ${request.user.username}`,
+      token
+    });
+  } else {
+    next({ status: 401, message: 'invalid credentials' });
+  }
 });
+
+function createToken(user) {
+  const payload = {
+    subject: user.user_id,
+    username: user.username
+  };
+  const options = {
+    expiresIn: '5m'
+  };
+  return jwt.sign(payload, JWT_SECRET, options);
+}
 
 module.exports = router;
