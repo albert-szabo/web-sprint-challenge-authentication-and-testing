@@ -1,4 +1,7 @@
 const router = require('express').Router();
+const { validateRegistrationPayload, checkUsernameAvailable } = require('../middleware/other-middleware');
+const Users = require('../users/users-model');
+const bcrypt = require('bcryptjs');
 
 /*
   IMPLEMENT
@@ -26,8 +29,14 @@ const router = require('express').Router();
     the response body should include a string exactly as follows: "username taken".
 */
 
-router.post('/register', (req, res) => {
-  res.end('implement register, please!');
+router.post('/register', validateRegistrationPayload, checkUsernameAvailable, (request, response, next) => {
+  const { username, password } = request.body;
+  const hash = bcrypt.hashSync(password, 8);
+  Users.add({ username, password: hash })
+    .then(newUser => {
+      response.status(201).json(newUser);
+    })
+    .catch(next);
 });
 
 /*
@@ -54,7 +63,7 @@ router.post('/register', (req, res) => {
     the response body should include a string exactly as follows: "invalid credentials".
 */
 
-router.post('/login', (req, res) => {
+router.post('/login', (request, response) => {
   res.end('implement login, please!');
 });
 
