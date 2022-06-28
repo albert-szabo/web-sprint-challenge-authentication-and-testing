@@ -12,7 +12,7 @@ const validateRegistrationPayload = (request, response, next) => {
 
 const checkUsernameAvailable = async (request, response, next) => {
     try {
-        const user = await Users.findBy({ username: request.body.username });
+        const [user] = await Users.findBy({ username: request.body.username });
         if (user) {
             next({ status: 400, message: 'username taken' });
         } else {
